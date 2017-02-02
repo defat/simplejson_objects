@@ -1,4 +1,3 @@
-from collections import namedtuple
 from functools import partial
 from datetime import datetime
 
@@ -23,6 +22,31 @@ def _datetime_fromdict(dict_):
     return datetime.fromtimestamp(dict_[TIMESTAMP_ATTR])
 
 
+def _init(self, **kwargs):
+    for k, v in kwargs.items():
+        setattr(self, k, v)
+
+
+def _repr(self):
+    return '%s.%s%s' % (type(self).__module__, type(self).__name__, self._asdict())
+
+
+def _asdict(self):
+    return {k: getattr(self, k) for k in self.__slots__}
+
+
+def _make_type(full_name, fields):
+    module, _, type_ = full_name.rpartition('.')
+    return type(type_, (), {
+        '__slots__': tuple(fields),
+        '__init__': _init,
+        '_asdict': _asdict,
+        '__dict__': property(_asdict),
+        '__repr__': _repr,
+        '__module__': module
+    })
+
+
 def _default(obj):
     if isinstance(obj, datetime):
         return _datetime_asdict(obj)
@@ -36,7 +60,7 @@ def _object_hook(json_object):
         type_name = json_object.pop(TYPE_ATTR)
         if type_name == datetime.__name__:
             return _datetime_fromdict(json_object)
-        type_ = namedtuple(type_name, json_object.keys())
+        type_ = _make_type(type_name, json_object.keys())
         return type_(**json_object)
     return json_object
 
