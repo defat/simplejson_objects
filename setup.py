@@ -6,7 +6,6 @@ setup(
     version='0.0.3',
     py_modules=['simplejson_objects'],
     zip_safe=False,
-    install_requires=['simplejson'],
     url='https://github.com/CrytekKiev/simplejson_objects',
     download_url='https://github.com/CrytekKiev/simplejson_objects/archive/0.0.3.tar.gz',
     entry_points={
