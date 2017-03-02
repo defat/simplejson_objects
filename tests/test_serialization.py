@@ -90,12 +90,8 @@ def test_mixin_dumps_loads():
     assert a.a == 1
 
 
-def test_transitiveness():
-    class A(SerializableMixin):
-        def __init__(self, a):
-            self.a = a
-
-    a = A(1)
+def test_transitiveness(class_A):
+    a = class_A(1)
 
     a_new = loads(dumps(loads(dumps(a))))
     assert a_new.a == a.a
