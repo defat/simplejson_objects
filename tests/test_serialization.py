@@ -1,8 +1,6 @@
 import pytest
 import logging
-from datetime import datetime
 
-import simplejson as json
 from simplejson_objects import *
 
 logging.basicConfig(level=logging.DEBUG)
