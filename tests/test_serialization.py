@@ -43,7 +43,7 @@ def class_A():
 
 def test_objects_serialization_check_type_attr(class_A):
     a = class_A(1)
-    assert eval(dumps(a))[TYPE_ATTR] == 'A'
+    assert eval(dumps(a))[TYPE_ATTR] == type(a).__module__ + '.A'
 
 
 def test_objects_serialization(class_A):
@@ -88,3 +88,14 @@ def test_mixin_dumps_loads():
     a = A.loads(a.dumps())
 
     assert a.a == 1
+
+
+def test_transitiveness():
+    class A(SerializableMixin):
+        def __init__(self, a):
+            self.a = a
+
+    a = A(1)
+
+    a_new = loads(dumps(loads(dumps(a))))
+    assert a_new.a == a.a
